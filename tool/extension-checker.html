@@ -37,7 +37,7 @@ No font-family is set: the block inherits the site's font. Event pushed to dataL
     <button type="submit">Check</button>
   </form>
   <div class="lew-out" aria-live="polite"></div>
-  <div class="lew-meta">Loading the list…</div>
+  <div class="lew-meta">Loading the list&hellip;</div>
   <script>
   (function () {
     var root = document.currentScript.closest('.lew');
@@ -48,7 +48,7 @@ No font-family is set: the block inherits the site's font. Event pushed to dataL
       no_exposed_files: 'its current version exposes no file to web pages',
       file_renamed_or_removed: 'its current version renamed or removed the file LinkedIn requests',
       exposed_to_other_sites_only: 'its current version exposes that file to other sites, not to linkedin.com',
-      dynamic_url: 'it uses Chrome’s dynamic URL option, which changes the file’s address every session'
+      dynamic_url: 'it uses Chrome\u2019s dynamic URL option, which changes the file\u2019s address every session'
     };
     function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
     function fmtDate(iso) { try { return new Date(iso + 'T12:00:00Z').toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC'}); } catch (e) { return iso; } }
@@ -57,11 +57,11 @@ No font-family is set: the block inherits the site's font. Event pushed to dataL
       var id = r[F.id], name = r[F.name] || 'Name not available (no longer on the Chrome Web Store)';
       var works = r[F.file_check_works], users = r[F.users];
       var html = '<div class="lew-card"><strong>' + esc(name) + '</strong>';
-      html += '<div class="lew-row"><span class="lew-tag lew-on">On LinkedIn’s list</span><code>' + esc(id) + '</code></div>';
+      html += '<div class="lew-row"><span class="lew-tag lew-on">On LinkedIn\u2019s list</span><code>' + esc(id) + '</code></div>';
       html += '<div class="lew-row">File LinkedIn requests: <code>' + esc(r[F.file]) + '</code></div>';
-      if (works === 'yes') html += '<div class="lew-row"><span class="lew-tag lew-yes">Detectable</span>The current version exposes this file to linkedin.com, so LinkedIn’s file check can find it.</div>';
-      else if (works === 'no') html += '<div class="lew-row"><span class="lew-tag lew-off">Not found by the file check</span>' + esc(REASON[r[F.reason_if_not]] || 'the current version doesn’t expose this file to linkedin.com') + '. An older installed version may still answer, and LinkedIn’s page scan can spot extensions that add their own elements to LinkedIn pages.</div>';
-      else html += '<div class="lew-row"><span class="lew-tag lew-off">Not checked</span>We couldn’t read this extension’s current version.</div>';
+      if (works === 'yes') html += '<div class="lew-row"><span class="lew-tag lew-yes">Detectable</span>The current version exposes this file to linkedin.com, so LinkedIn\u2019s file check can find it.</div>';
+      else if (works === 'no') html += '<div class="lew-row"><span class="lew-tag lew-off">Not found by the file check</span>' + esc(REASON[r[F.reason_if_not]] || 'the current version doesn\u2019t expose this file to linkedin.com') + '. An older installed version may still answer, and LinkedIn\u2019s page scan can spot extensions that add their own elements to LinkedIn pages.</div>';
+      else html += '<div class="lew-row"><span class="lew-tag lew-off">Not checked</span>We couldn\u2019t read this extension\u2019s current version.</div>';
       if (users) html += '<div class="lew-row">Users on the Chrome Web Store: ' + Number(users).toLocaleString('en-US') + '</div>';
       return html + '</div>';
     }
@@ -70,12 +70,12 @@ No font-family is set: the block inherits the site's font. Event pushed to dataL
       var m = q.match(/[a-p]{32}/);
       if (m) {
         var r = byId[m[0]];
-        out.innerHTML = r ? card(r) : '<div class="lew-card"><strong>Not on the list</strong><div class="lew-row">The ID <code>' + esc(m[0]) + '</code> wasn’t in LinkedIn’s list on ' + esc(fmtDate(data.checked_on)) + '.</div></div>';
+        out.innerHTML = r ? card(r) : '<div class="lew-card"><strong>Not on the list</strong><div class="lew-row">The ID <code>' + esc(m[0]) + '</code> wasn\u2019t in LinkedIn\u2019s list on ' + esc(fmtDate(data.checked_on)) + '.</div></div>';
         track(!!r, 'id'); return;
       }
       var s = q.toLowerCase(), hits = data.extensions.filter(function (r) { return r[F.name] && r[F.name].toLowerCase().indexOf(s) > -1; });
       hits.sort(function (a, b) { return (b[F.users] || 0) - (a[F.users] || 0); });
-      if (!hits.length) out.innerHTML = '<div class="lew-card"><strong>No extension with that name on the list</strong><div class="lew-row">Some listed extensions no longer have a store page, so they have no name. Search by ID to be sure: it’s on the extension’s card in <code>chrome://extensions</code> (Developer mode on).</div></div>';
+      if (!hits.length) out.innerHTML = '<div class="lew-card"><strong>No extension with that name on the list</strong><div class="lew-row">Some listed extensions no longer have a store page, so they have no name. Search by ID to be sure: it\u2019s on the extension\u2019s card in <code>chrome://extensions</code> (Developer mode on).</div></div>';
       else out.innerHTML = (hits.length > 5 ? '<div class="lew-row">' + hits.length + ' matches, most installed first:</div>' : '') + hits.slice(0, 5).map(card).join('');
       track(hits.length > 0, 'name');
     }
@@ -85,8 +85,8 @@ No font-family is set: the block inherits the site's font. Event pushed to dataL
       data = d; d.fields.forEach(function (f, i) { F[f] = i; });
       d.extensions.forEach(function (r) { byId[r[F.id]] = r; });
       btn.disabled = false;
-      meta.innerHTML = 'List of ' + d.count.toLocaleString('en-US') + ' extensions from LinkedIn’s code, checked on ' + esc(fmtDate(d.checked_on)) + '. Data: <a href="https://github.com/bricemaurin/linkedin-extension-watch" target="_blank" rel="noopener">LinkedIn Extension Watch</a> (CC BY 4.0).';
-    }).catch(function () { meta.textContent = 'The list couldn’t be loaded. Please try again later.'; });
+      meta.innerHTML = 'List of ' + d.count.toLocaleString('en-US') + ' extensions from LinkedIn\u2019s code, checked on ' + esc(fmtDate(d.checked_on)) + '. Data: <a href="https://github.com/bricemaurin/linkedin-extension-watch" target="_blank" rel="noopener">LinkedIn Extension Watch</a> (CC BY 4.0).';
+    }).catch(function () { meta.textContent = 'The list couldn\u2019t be loaded. Please try again later.'; });
   })();
   </script>
 </div>
