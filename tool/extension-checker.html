@@ -3,45 +3,112 @@ LinkedIn Extension Watch: "Is your extension on LinkedIn's list?" checker.
 Paste this block into a WordPress Custom HTML block. It reads the data from GitHub (data-src), not from the page,
 so updating data/latest.json in the repository updates the checker without editing the article.
 No font-family is set: the block inherits the site's font. Event pushed to dataLayer: ext_checker_search.
+The file is ASCII only (entities in the markup, \u escapes in the script), so it renders on any page charset.
 -->
 <div class="lew" data-src="https://raw.githubusercontent.com/bricemaurin/linkedin-extension-watch/main/data/latest.json">
   <style>
-    .lew{--dp:#231932;--lp3:#817891;--lp5:#CECBD7;--white:#F5F5FA;--blue:#287DFF;--blue5:#CCDDFB;--green:#3FCA77;--red5:#F7D8DA;--red:#FF645A;
-      background:var(--white);border:1px solid var(--lp5);border-radius:25px;padding:25px;color:var(--dp);max-width:760px;margin:25px auto;box-sizing:border-box}
-    .lew *{box-sizing:border-box}
-    .lew h3{margin:0 0 10px;font-size:24px;line-height:1.2;font-weight:800;color:var(--dp)}
-    .lew p{margin:0 0 16px;font-size:16px;line-height:1.4}
-    .lew form{display:flex;gap:10px;flex-wrap:wrap}
-    .lew label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-    .lew input{flex:1 1 320px;min-width:0;height:48px;border:1px solid var(--lp3);border-radius:10px;padding:0 14px;font:inherit;font-size:16px;color:var(--dp);background:#fff}
-    .lew input:focus{outline:2px solid var(--blue);outline-offset:1px}
-    .lew button{height:48px;padding:0 25px;border:0;border-radius:10px;background:var(--green);color:#fff;font:inherit;font-size:16px;font-weight:800;cursor:pointer}
-    .lew button:disabled{opacity:.6;cursor:wait}
-    .lew .lew-out{margin-top:16px}
-    .lew .lew-card{border-radius:16px;padding:16px;background:#fff;border:1px solid var(--lp5);margin-top:10px}
-    .lew .lew-card strong{display:block;font-size:18px;margin-bottom:6px}
-    .lew .lew-row{font-size:15px;line-height:1.4;margin-top:4px}
-    .lew .lew-tag{display:inline-block;border-radius:8px;padding:2px 8px;font-size:13px;font-weight:800;margin-right:6px}
-    .lew .lew-on{background:var(--blue5);color:var(--dp)}
-    .lew .lew-off{background:var(--lp5);color:var(--dp)}
-    .lew .lew-yes{background:var(--dp);color:#fff}
-    .lew code{font-size:13px;background:var(--white);border-radius:6px;padding:1px 5px;word-break:break-all}
-    .lew .lew-meta{font-size:13px;color:var(--lp3);margin-top:16px;line-height:1.4}
-    .lew .lew-meta a{color:inherit}
+    .lew{--dp:#231932;--lp2:#5B4E6E;--lp3:#817891;--lp4:#A8A1B4;--lp5:#CECBD7;--w:#F5F5FA;--pw:#FFFFFF;--blue:#287DFF;--blue3:#7AADFD;--blue5:#CCDDFB;--green:#3FCA77;--green2:#61D192;
+      position:relative;overflow:hidden;box-sizing:border-box;max-width:760px;margin:25px auto;padding:50px;border-radius:25px;background:var(--dp);color:var(--pw);font-size:16px;line-height:1.4;text-align:left}
+    .lew *,.lew *::before,.lew *::after{box-sizing:border-box}
+    .lew :where(h3,p,form,dl,dt,dd,strong,button,input,a){margin:0;padding:0;border:0;background:none;box-shadow:none;font:inherit;color:inherit;letter-spacing:normal;text-transform:none;text-shadow:none}
+    .lew :where(code){margin:0;padding:0;border:0;background:none;color:inherit;font-weight:400}
+    .lew::before{content:"";position:absolute;top:0;left:0;right:0;height:260px;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.11) 1px,transparent 1.6px);background-size:18px 18px;-webkit-mask-image:linear-gradient(to bottom,#000,transparent);mask-image:linear-gradient(to bottom,#000,transparent)}
+    .lew > *{position:relative}
+    .lew .lew-title{font-size:28px;line-height:1.1;font-weight:400;color:var(--pw)}
+    .lew .lew-title strong{font-weight:800}
+    .lew .lew-lead{margin-top:10px;font-size:16px;line-height:1.4;color:var(--lp5)}
+    .lew .lew-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+    .lew .lew-bar{display:flex;align-items:center;gap:10px;margin-top:25px;padding:8px 8px 8px 16px;border-radius:16px;background:var(--pw);box-shadow:0 0 48px var(--dp);transition:box-shadow .2s ease}
+    .lew .lew-bar:focus-within{box-shadow:0 0 0 3px var(--blue3)}
+    .lew .lew-ico{flex:0 0 auto;width:22px;height:22px;fill:var(--lp3)}
+    .lew .lew-input{flex:1 1 auto;min-width:0;width:100%;height:48px;font-size:16px;line-height:1.2;color:var(--dp);outline:0;border-radius:0;-webkit-appearance:none;appearance:none}
+    .lew .lew-input::placeholder{color:var(--lp3);opacity:1}
+    .lew .lew-go{flex:0 0 auto;height:48px;padding:0 25px;border-radius:10px;background:var(--green);color:var(--pw);font-size:16px;line-height:1;font-weight:800;cursor:pointer;transition:background-color .15s ease,transform .15s ease}
+    .lew .lew-go:hover{background:var(--green2)}
+    .lew .lew-go:active{transform:scale(.98)}
+    .lew .lew-go:focus-visible,.lew .lew-ex:focus-visible{outline:2px solid var(--blue3);outline-offset:2px}
+    .lew .lew-go:disabled,.lew .lew-ex:disabled{opacity:.55;cursor:wait}
+    .lew .lew-try{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:16px;font-size:14px;line-height:1.2;color:var(--lp4)}
+    .lew .lew-ex{display:inline-flex;align-items:center;gap:8px;max-width:100%;height:30px;padding:0 10px;border:1px solid var(--lp3);border-radius:10px;color:var(--pw);font-size:14px;line-height:1;font-weight:800;cursor:pointer;transition:border-color .15s ease,background-color .15s ease}
+    .lew .lew-ex span{font-weight:400;color:var(--lp4)}
+    .lew .lew-ex:hover{border-color:var(--pw);background:rgba(255,255,255,.08)}
+    .lew .lew-out:not(:empty){margin-top:25px}
+    .lew .lew-count{margin-bottom:10px;font-size:14px;line-height:1.2;color:var(--lp5)}
+    .lew .lew-card{padding:25px;border-radius:16px;background:var(--w);color:var(--dp);animation:lew-in .35s ease both}
+    .lew .lew-card + .lew-card{margin-top:10px}
+    .lew .lew-card:nth-child(3){animation-delay:.05s}
+    .lew .lew-card:nth-child(4){animation-delay:.1s}
+    .lew .lew-card:nth-child(5){animation-delay:.15s}
+    .lew .lew-card:nth-child(6){animation-delay:.2s}
+    @keyframes lew-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    @keyframes lew-spin{to{transform:rotate(360deg)}}
+    .lew .lew-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px 16px}
+    .lew .lew-who{min-width:0}
+    .lew .lew-name{display:block;font-size:20px;line-height:1.2;font-weight:800;color:var(--dp);overflow-wrap:anywhere}
+    .lew .lew-note{display:block;margin-top:4px;font-size:14px;line-height:1.2;color:var(--lp2)}
+    .lew .lew-id{display:block;margin-top:6px;font-size:13px;line-height:1.3;color:var(--lp2);word-break:break-all}
+    .lew .lew-chip{display:inline-flex;align-items:center;gap:7px;flex:0 0 auto;padding:6px 10px;border:1px solid transparent;border-radius:8px;font-size:13px;line-height:1.1;font-weight:800;color:var(--dp);white-space:nowrap}
+    .lew .lew-chip::before{content:"";flex:0 0 auto;width:8px;height:8px;border-radius:50%;border:2px solid currentColor}
+    .lew .lew-chip-list{background:var(--blue5)}
+    .lew .lew-chip-list::before{border-color:var(--blue);background:var(--blue)}
+    .lew .lew-chip-yes{background:var(--dp);color:var(--pw)}
+    .lew .lew-chip-yes::before{background:currentColor}
+    .lew .lew-chip-no{background:var(--pw);border-color:var(--lp4)}
+    .lew .lew-chip-na{background:transparent;border-color:var(--lp4);border-style:dashed;color:var(--lp2)}
+    .lew .lew-chip-na::before{border-width:1px;border-style:dashed}
+    .lew .lew-verdict{margin-top:16px;padding:16px;border-radius:12px;background:var(--pw)}
+    .lew .lew-verdict p{margin-top:10px;font-size:15px;line-height:1.4;color:var(--dp)}
+    .lew .lew-facts{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:10px;margin-top:10px}
+    .lew .lew-facts.lew-one{grid-template-columns:minmax(0,1fr)}
+    .lew .lew-fact{padding:12px 16px;border-radius:12px;background:var(--pw)}
+    .lew .lew-fact dt{font-size:13px;line-height:1.2;font-weight:400;color:var(--lp2)}
+    .lew .lew-fact dd{margin-top:6px;font-size:16px;line-height:1.3;font-weight:800;color:var(--dp);word-break:break-all}
+    .lew .lew-fact dd code{font-size:14px;font-weight:400}
+    .lew .lew-plain p{margin-top:10px;font-size:15px;line-height:1.5;color:var(--dp)}
+    .lew .lew-plain code{padding:2px 6px;border-radius:8px;background:var(--pw);font-size:13px;word-break:break-all}
+    .lew .lew-meta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 25px;margin-top:25px;padding-top:16px;border-top:1px solid var(--lp2);font-size:13px;line-height:1.4;color:var(--lp4)}
+    .lew .lew-meta a{color:var(--lp5);text-decoration:underline;text-underline-offset:2px}
+    .lew .lew-meta a:hover{color:var(--pw)}
+    .lew .lew-spin{display:inline-block;width:12px;height:12px;margin-right:8px;vertical-align:-1px;border:2px solid var(--lp2);border-top-color:var(--pw);border-radius:50%;animation:lew-spin .8s linear infinite}
+    @media (max-width:600px){
+      .lew{padding:25px 20px;border-radius:16px}
+      .lew .lew-title{font-size:24px}
+      .lew .lew-bar{flex-wrap:wrap;padding:8px;border-radius:12px}
+      .lew .lew-ico{margin-left:8px}
+      .lew .lew-input{flex:1 1 0;width:auto}
+      .lew .lew-go{flex:1 1 100%;width:100%}
+      .lew .lew-card{padding:16px;border-radius:12px}
+      .lew .lew-head{flex-direction:column}
+      .lew .lew-verdict,.lew .lew-fact{border-radius:8px}
+      .lew .lew-facts{grid-template-columns:minmax(0,1fr)}
+      .lew .lew-chip{white-space:normal}
+    }
+    @media (prefers-reduced-motion:reduce){
+      .lew .lew-card,.lew .lew-spin{animation:none}
+      .lew .lew-go,.lew .lew-ex,.lew .lew-bar{transition:none}
+    }
   </style>
-  <h3>Is your extension on LinkedIn's list?</h3>
-  <p>Paste a Chrome extension ID, its Chrome Web Store link, or type its name.</p>
-  <form>
-    <label for="lew-q">Extension ID, link or name</label>
-    <input id="lew-q" type="text" autocomplete="off" placeholder="e.g. alhgpfoeiimagjlnfekdhkjlkiomcapa or Apollo">
-    <button type="submit">Check</button>
+  <h3 class="lew-title">Is your extension <strong>on LinkedIn&rsquo;s list?</strong></h3>
+  <p class="lew-lead">Paste a Chrome extension ID, its Chrome Web Store link, or type its name.</p>
+  <form class="lew-bar">
+    <label class="lew-sr" for="lew-q">Extension ID, link or name</label>
+    <svg class="lew-ico" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg>
+    <input class="lew-input" id="lew-q" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ID, store link or name">
+    <button class="lew-go" type="submit">Check</button>
   </form>
+  <div class="lew-try">
+    <span>Try</span>
+    <button class="lew-ex" type="button" data-q="Apollo"><span>Name</span>Apollo</button>
+    <button class="lew-ex" type="button" data-q="alhgpfoeiimagjlnfekdhkjlkiomcapa"><span>ID</span>alhgpfoe&hellip;</button>
+    <button class="lew-ex" type="button" data-q="https://chromewebstore.google.com/detail/x/mcebeofpilippmndlpcghpmghcljajna"><span>Link</span>chromewebstore.google.com/&hellip;</button>
+  </div>
   <div class="lew-out" aria-live="polite"></div>
-  <div class="lew-meta">Loading the list&hellip;</div>
+  <div class="lew-meta"><span><i class="lew-spin" aria-hidden="true"></i>Loading the list&hellip;</span></div>
   <script>
   (function () {
     var root = document.currentScript.closest('.lew');
-    var form = root.querySelector('form'), input = root.querySelector('input'), btn = root.querySelector('button');
+    var form = root.querySelector('form'), input = root.querySelector('.lew-input'), btn = root.querySelector('.lew-go');
+    var examples = root.querySelectorAll('.lew-ex');
     var out = root.querySelector('.lew-out'), meta = root.querySelector('.lew-meta');
     var data = null, byId = {}, F = {};
     var REASON = {
@@ -51,41 +118,47 @@ No font-family is set: the block inherits the site's font. Event pushed to dataL
       dynamic_url: 'it uses Chrome\u2019s dynamic URL option, which changes the file\u2019s address every session'
     };
     function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+    function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
     function fmtDate(iso) { try { return new Date(iso + 'T12:00:00Z').toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC'}); } catch (e) { return iso; } }
     function track(found, kind) { try { (window.dataLayer = window.dataLayer || []).push({event: 'ext_checker_search', found: found, query_type: kind}); } catch (e) {} }
+    function setBusy(busy) { btn.disabled = busy; for (var i = 0; i < examples.length; i++) examples[i].disabled = busy; }
+    function plain(title, body) { return '<div class="lew-card lew-plain"><strong class="lew-name">' + title + '<\/strong><p>' + body + '<\/p><\/div>'; }
     function card(r) {
-      var id = r[F.id], name = r[F.name] || 'Name not available (no longer on the Chrome Web Store)';
-      var works = r[F.file_check_works], users = r[F.users];
-      var html = '<div class="lew-card"><strong>' + esc(name) + '</strong>';
-      html += '<div class="lew-row"><span class="lew-tag lew-on">On LinkedIn\u2019s list</span><code>' + esc(id) + '</code></div>';
-      html += '<div class="lew-row">File LinkedIn requests: <code>' + esc(r[F.file]) + '</code></div>';
-      if (works === 'yes') html += '<div class="lew-row"><span class="lew-tag lew-yes">Detectable</span>The current version exposes this file to linkedin.com, so LinkedIn\u2019s file check can find it.</div>';
-      else if (works === 'no') html += '<div class="lew-row"><span class="lew-tag lew-off">Not found by the file check</span>' + esc(REASON[r[F.reason_if_not]] || 'the current version doesn\u2019t expose this file to linkedin.com') + '. An older installed version may still answer, and LinkedIn\u2019s page scan can spot extensions that add their own elements to LinkedIn pages.</div>';
-      else html += '<div class="lew-row"><span class="lew-tag lew-off">Not checked</span>We couldn\u2019t read this extension\u2019s current version.</div>';
-      if (users) html += '<div class="lew-row">Users on the Chrome Web Store: ' + Number(users).toLocaleString('en-US') + '</div>';
-      return html + '</div>';
+      var id = r[F.id], name = r[F.name], works = r[F.file_check_works], users = r[F.users];
+      var html = '<div class="lew-card"><div class="lew-head"><div class="lew-who">';
+      if (name) html += '<strong class="lew-name">' + esc(name) + '<\/strong>';
+      else html += '<strong class="lew-name">Name not available<\/strong><span class="lew-note">No longer on the Chrome Web Store<\/span>';
+      html += '<code class="lew-id">' + esc(id) + '<\/code><\/div><span class="lew-chip lew-chip-list">On LinkedIn\u2019s list<\/span><\/div>';
+      html += '<div class="lew-verdict">';
+      if (works === 'yes') html += '<span class="lew-chip lew-chip-yes">Detectable<\/span><p>The current version exposes this file to linkedin.com, so LinkedIn\u2019s file check can find it.<\/p>';
+      else if (works === 'no') html += '<span class="lew-chip lew-chip-no">Not found by the file check<\/span><p>' + esc(cap(REASON[r[F.reason_if_not]] || 'the current version doesn\u2019t expose this file to linkedin.com')) + '. An older installed version may still answer, and LinkedIn\u2019s page scan can spot extensions that add their own elements to LinkedIn pages.<\/p>';
+      else html += '<span class="lew-chip lew-chip-na">Not checked<\/span><p>We couldn\u2019t read this extension\u2019s current version.<\/p>';
+      html += '<\/div><dl class="lew-facts' + (users ? '' : ' lew-one') + '"><div class="lew-fact"><dt>File LinkedIn requests<\/dt><dd><code>' + esc(r[F.file]) + '<\/code><\/dd><\/div>';
+      if (users) html += '<div class="lew-fact"><dt>Users on the Chrome Web Store<\/dt><dd>' + Number(users).toLocaleString('en-US') + '<\/dd><\/div>';
+      return html + '<\/dl><\/div>';
     }
     function search(q) {
       q = (q || '').trim(); if (!q) return;
       var m = q.match(/[a-p]{32}/);
       if (m) {
         var r = byId[m[0]];
-        out.innerHTML = r ? card(r) : '<div class="lew-card"><strong>Not on the list</strong><div class="lew-row">The ID <code>' + esc(m[0]) + '</code> wasn\u2019t in LinkedIn\u2019s list on ' + esc(fmtDate(data.checked_on)) + '.</div></div>';
+        out.innerHTML = r ? card(r) : plain('Not on the list', 'The ID <code>' + esc(m[0]) + '<\/code> wasn\u2019t in LinkedIn\u2019s list on ' + esc(fmtDate(data.checked_on)) + '.');
         track(!!r, 'id'); return;
       }
       var s = q.toLowerCase(), hits = data.extensions.filter(function (r) { return r[F.name] && r[F.name].toLowerCase().indexOf(s) > -1; });
       hits.sort(function (a, b) { return (b[F.users] || 0) - (a[F.users] || 0); });
-      if (!hits.length) out.innerHTML = '<div class="lew-card"><strong>No extension with that name on the list</strong><div class="lew-row">Some listed extensions no longer have a store page, so they have no name. Search by ID to be sure: it\u2019s on the extension\u2019s card in <code>chrome://extensions</code> (Developer mode on).</div></div>';
-      else out.innerHTML = (hits.length > 5 ? '<div class="lew-row">' + hits.length + ' matches, most installed first:</div>' : '') + hits.slice(0, 5).map(card).join('');
+      if (!hits.length) out.innerHTML = plain('No extension with that name on the list', 'Some listed extensions no longer have a store page, so they have no name. Search by ID to be sure: it\u2019s on the extension\u2019s card in <code>chrome://extensions<\/code> (Developer mode on).');
+      else out.innerHTML = (hits.length > 5 ? '<div class="lew-count">' + hits.length + ' matches, most installed first:<\/div>' : '') + hits.slice(0, 5).map(card).join('');
       track(hits.length > 0, 'name');
     }
     form.addEventListener('submit', function (e) { e.preventDefault(); if (data) search(input.value); });
-    btn.disabled = true;
+    for (var i = 0; i < examples.length; i++) examples[i].addEventListener('click', function () { if (!data) return; input.value = this.getAttribute('data-q'); search(input.value); });
+    setBusy(true);
     fetch(root.getAttribute('data-src'), {cache: 'no-cache'}).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (d) {
       data = d; d.fields.forEach(function (f, i) { F[f] = i; });
       d.extensions.forEach(function (r) { byId[r[F.id]] = r; });
-      btn.disabled = false;
-      meta.innerHTML = 'List of ' + d.count.toLocaleString('en-US') + ' extensions from LinkedIn\u2019s code, checked on ' + esc(fmtDate(d.checked_on)) + '. Data: <a href="https://github.com/bricemaurin/linkedin-extension-watch" target="_blank" rel="noopener">LinkedIn Extension Watch</a> (CC BY 4.0).';
+      setBusy(false);
+      meta.innerHTML = '<span>List of ' + d.count.toLocaleString('en-US') + ' extensions from LinkedIn\u2019s code, checked on ' + esc(fmtDate(d.checked_on)) + '.<\/span><span>Data: <a href="https://github.com/bricemaurin/linkedin-extension-watch" target="_blank" rel="noopener">LinkedIn Extension Watch<\/a> (CC BY 4.0)<\/span>';
     }).catch(function () { meta.textContent = 'The list couldn\u2019t be loaded. Please try again later.'; });
   })();
   </script>
