@@ -4,6 +4,8 @@ The list of Chrome extensions that linkedin.com looks for in its visitors' brows
 
 **Latest check: November 13, 2026.** LinkedIn's file listed **4,934 extensions**. Of the 4,550 we could check, **2,835 (62%)** still exposed the file LinkedIn requests, so only those can actually be found by its file check.
 
+Full analysis, by category, with a checker to test any extension: [Which Chrome Extensions Does LinkedIn Detect? (2026 Data)](https://lagrowthmachine.com/linkedin-chrome-extension-detection/).
+
 ## How LinkedIn checks for extensions
 
 Chrome extensions can make some of their files available to web pages (`web_accessible_resources`). Each extension has a fixed 32-letter ID, so those files have predictable addresses: `chrome-extension://<id>/<file>`. LinkedIn's code holds a list of IDs, each paired with one file, and requests every file. If the file loads, the extension is installed.
@@ -63,6 +65,6 @@ We don't publish LinkedIn's file, the extensions' descriptions or their raw mani
 
 ## License and credit
 
-Data: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Credit "La Growth Machine, LinkedIn Extension Watch" with a link to this repository. Scripts: MIT (see `LICENSE`).
+Data: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Credit "La Growth Machine, LinkedIn Extension Watch" with a link to this repository or to the [analysis](https://lagrowthmachine.com/linkedin-chrome-extension-detection/). Scripts: MIT (see `LICENSE`).
 
 Maintained by Brice Maurin, CEO of [La Growth Machine](https://lagrowthmachine.com), an outreach platform that runs LinkedIn from the cloud. We have a stake in this topic, so we publish the data and the method for anyone to check. Corrections are welcome through issues.
