@@ -1,0 +1,92 @@
+<!--
+LinkedIn Extension Watch: "Is your extension on LinkedIn's list?" checker.
+Paste this block into a WordPress Custom HTML block. It reads the data from GitHub (data-src), not from the page,
+so updating data/latest.json in the repository updates the checker without editing the article.
+No font-family is set: the block inherits the site's font. Event pushed to dataLayer: ext_checker_search.
+-->
+<div class="lew" data-src="https://raw.githubusercontent.com/bricemaurin/linkedin-extension-watch/main/data/latest.json">
+  <style>
+    .lew{--dp:#231932;--lp3:#817891;--lp5:#CECBD7;--white:#F5F5FA;--blue:#287DFF;--blue5:#CCDDFB;--green:#3FCA77;--red5:#F7D8DA;--red:#FF645A;
+      background:var(--white);border:1px solid var(--lp5);border-radius:25px;padding:25px;color:var(--dp);max-width:760px;margin:25px auto;box-sizing:border-box}
+    .lew *{box-sizing:border-box}
+    .lew h3{margin:0 0 10px;font-size:24px;line-height:1.2;font-weight:800;color:var(--dp)}
+    .lew p{margin:0 0 16px;font-size:16px;line-height:1.4}
+    .lew form{display:flex;gap:10px;flex-wrap:wrap}
+    .lew label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+    .lew input{flex:1 1 320px;min-width:0;height:48px;border:1px solid var(--lp3);border-radius:10px;padding:0 14px;font:inherit;font-size:16px;color:var(--dp);background:#fff}
+    .lew input:focus{outline:2px solid var(--blue);outline-offset:1px}
+    .lew button{height:48px;padding:0 25px;border:0;border-radius:10px;background:var(--green);color:#fff;font:inherit;font-size:16px;font-weight:800;cursor:pointer}
+    .lew button:disabled{opacity:.6;cursor:wait}
+    .lew .lew-out{margin-top:16px}
+    .lew .lew-card{border-radius:16px;padding:16px;background:#fff;border:1px solid var(--lp5);margin-top:10px}
+    .lew .lew-card strong{display:block;font-size:18px;margin-bottom:6px}
+    .lew .lew-row{font-size:15px;line-height:1.4;margin-top:4px}
+    .lew .lew-tag{display:inline-block;border-radius:8px;padding:2px 8px;font-size:13px;font-weight:800;margin-right:6px}
+    .lew .lew-on{background:var(--blue5);color:var(--dp)}
+    .lew .lew-off{background:var(--lp5);color:var(--dp)}
+    .lew .lew-yes{background:var(--dp);color:#fff}
+    .lew code{font-size:13px;background:var(--white);border-radius:6px;padding:1px 5px;word-break:break-all}
+    .lew .lew-meta{font-size:13px;color:var(--lp3);margin-top:16px;line-height:1.4}
+    .lew .lew-meta a{color:inherit}
+  </style>
+  <h3>Is your extension on LinkedIn's list?</h3>
+  <p>Paste a Chrome extension ID, its Chrome Web Store link, or type its name.</p>
+  <form>
+    <label for="lew-q">Extension ID, link or name</label>
+    <input id="lew-q" type="text" autocomplete="off" placeholder="e.g. alhgpfoeiimagjlnfekdhkjlkiomcapa or Apollo">
+    <button type="submit">Check</button>
+  </form>
+  <div class="lew-out" aria-live="polite"></div>
+  <div class="lew-meta">Loading the list…</div>
+  <script>
+  (function () {
+    var root = document.currentScript.closest('.lew');
+    var form = root.querySelector('form'), input = root.querySelector('input'), btn = root.querySelector('button');
+    var out = root.querySelector('.lew-out'), meta = root.querySelector('.lew-meta');
+    var data = null, byId = {}, F = {};
+    var REASON = {
+      no_exposed_files: 'its current version exposes no file to web pages',
+      file_renamed_or_removed: 'its current version renamed or removed the file LinkedIn requests',
+      exposed_to_other_sites_only: 'its current version exposes that file to other sites, not to linkedin.com',
+      dynamic_url: 'it uses Chrome’s dynamic URL option, which changes the file’s address every session'
+    };
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+    function fmtDate(iso) { try { return new Date(iso + 'T12:00:00Z').toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC'}); } catch (e) { return iso; } }
+    function track(found, kind) { try { (window.dataLayer = window.dataLayer || []).push({event: 'ext_checker_search', found: found, query_type: kind}); } catch (e) {} }
+    function card(r) {
+      var id = r[F.id], name = r[F.name] || 'Name not available (no longer on the Chrome Web Store)';
+      var works = r[F.file_check_works], users = r[F.users];
+      var html = '<div class="lew-card"><strong>' + esc(name) + '</strong>';
+      html += '<div class="lew-row"><span class="lew-tag lew-on">On LinkedIn’s list</span><code>' + esc(id) + '</code></div>';
+      html += '<div class="lew-row">File LinkedIn requests: <code>' + esc(r[F.file]) + '</code></div>';
+      if (works === 'yes') html += '<div class="lew-row"><span class="lew-tag lew-yes">Detectable</span>The current version exposes this file to linkedin.com, so LinkedIn’s file check can find it.</div>';
+      else if (works === 'no') html += '<div class="lew-row"><span class="lew-tag lew-off">Not found by the file check</span>' + esc(REASON[r[F.reason_if_not]] || 'the current version doesn’t expose this file to linkedin.com') + '. An older installed version may still answer, and LinkedIn’s page scan can spot extensions that add their own elements to LinkedIn pages.</div>';
+      else html += '<div class="lew-row"><span class="lew-tag lew-off">Not checked</span>We couldn’t read this extension’s current version.</div>';
+      if (users) html += '<div class="lew-row">Users on the Chrome Web Store: ' + Number(users).toLocaleString('en-US') + '</div>';
+      return html + '</div>';
+    }
+    function search(q) {
+      q = (q || '').trim(); if (!q) return;
+      var m = q.match(/[a-p]{32}/);
+      if (m) {
+        var r = byId[m[0]];
+        out.innerHTML = r ? card(r) : '<div class="lew-card"><strong>Not on the list</strong><div class="lew-row">The ID <code>' + esc(m[0]) + '</code> wasn’t in LinkedIn’s list on ' + esc(fmtDate(data.checked_on)) + '.</div></div>';
+        track(!!r, 'id'); return;
+      }
+      var s = q.toLowerCase(), hits = data.extensions.filter(function (r) { return r[F.name] && r[F.name].toLowerCase().indexOf(s) > -1; });
+      hits.sort(function (a, b) { return (b[F.users] || 0) - (a[F.users] || 0); });
+      if (!hits.length) out.innerHTML = '<div class="lew-card"><strong>No extension with that name on the list</strong><div class="lew-row">Some listed extensions no longer have a store page, so they have no name. Search by ID to be sure: it’s on the extension’s card in <code>chrome://extensions</code> (Developer mode on).</div></div>';
+      else out.innerHTML = (hits.length > 5 ? '<div class="lew-row">' + hits.length + ' matches, most installed first:</div>' : '') + hits.slice(0, 5).map(card).join('');
+      track(hits.length > 0, 'name');
+    }
+    form.addEventListener('submit', function (e) { e.preventDefault(); if (data) search(input.value); });
+    btn.disabled = true;
+    fetch(root.getAttribute('data-src'), {cache: 'no-cache'}).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (d) {
+      data = d; d.fields.forEach(function (f, i) { F[f] = i; });
+      d.extensions.forEach(function (r) { byId[r[F.id]] = r; });
+      btn.disabled = false;
+      meta.innerHTML = 'List of ' + d.count.toLocaleString('en-US') + ' extensions from LinkedIn’s code, checked on ' + esc(fmtDate(d.checked_on)) + '. Data: <a href="https://github.com/bricemaurin/linkedin-extension-watch" target="_blank" rel="noopener">LinkedIn Extension Watch</a> (CC BY 4.0).';
+    }).catch(function () { meta.textContent = 'The list couldn’t be loaded. Please try again later.'; });
+  })();
+  </script>
+</div>

@@ -1,0 +1,8 @@
+data/linkedin-probed-extensions-*.csv
+data/cws-details-*.csv
+data/manifest-flags-*.csv
+data/manifests-*.jsonl
+data/raw-linkedin-*/
+__pycache__/
+.DS_Store
+tool/test-local.html
